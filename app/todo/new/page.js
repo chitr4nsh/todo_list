@@ -1,6 +1,6 @@
 "use client";
 
-import TodoForm from "@/components/TodoForm";
+import TodoForm from "@/app/components/TodoForm";
 import { createTodo } from "@/lib/todos";
 
 export default function NewTodo() {
