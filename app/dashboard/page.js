@@ -630,6 +630,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useAuth } from "@/app/context/AuthContext";
 import { useRouter } from "next/navigation";
 import {
   useQuery,
@@ -651,11 +652,12 @@ import Skeleton from "@/app/components/ui/Skeleton";
 import EmptyState from "@/app/components/ui/EmptyState";
 
 export default function DashboardPage() {
-  const router = useRouter(); 
-  const queryClient = useQueryClient(); 
+  const router = useRouter();
+  const queryClient = useQueryClient();
 
   // 🔐 USER
-  const [user, setUser] = useState(null);  
+  // 🔐 USER
+  const { user } = useAuth();
 
   // 📝 FORM STATE
   const [title, setTitle] = useState("");
@@ -677,12 +679,13 @@ export default function DashboardPage() {
   // 🔐 AUTH CHECK
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
-    const storedUser = localStorage.getItem("user");
 
-    if (!token) return router.push("/login");
-
-    if (storedUser) setUser(JSON.parse(storedUser));
+    if (!token) {
+      router.push("/login");
+    }
   }, [router]);
+
+
 
   // 📥 FETCH TODOS
   const {
@@ -783,13 +786,13 @@ export default function DashboardPage() {
         {/* CREATE */}
         <TodoForm
           title={title}
-  setTitle={setTitle}
-  description={description}
-  setDescription={setDescription}
-  priority={priority}
-  setPriority={setPriority}
-  status={status}
-  setStatus={setStatus}
+          setTitle={setTitle}
+          description={description}
+          setDescription={setDescription}
+          priority={priority}
+          setPriority={setPriority}
+          status={status}
+          setStatus={setStatus}
           onSubmit={() => {
             if (!title.trim()) {
               toast.error("Title required");
@@ -797,10 +800,10 @@ export default function DashboardPage() {
             }
 
             createMutation.mutate({
-             title,
-  description,
-  priority,
-  status,
+              title,
+              description,
+              priority,
+              status,
             });
           }}
         />
@@ -873,10 +876,10 @@ export default function DashboardPage() {
             updateMutation.mutate({
               id: editingTodo._id,
               data: {
-                 title: editingTodo.title,
-    description: editingTodo.description,
-    priority: editingTodo.priority,
-    status: editingTodo.status,
+                title: editingTodo.title,
+                description: editingTodo.description,
+                priority: editingTodo.priority,
+                status: editingTodo.status,
               },
             })
           }
